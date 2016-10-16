@@ -117,4 +117,20 @@ function gameOver() {
         cards.push(card);
     });
 })();
-cards.forEach(card => card.classList.toggle("flip"));
+
+function flipCards() {
+    let i = 0;
+    let timer = setInterval(() => {
+        if (i >= cards.length) {
+            clearTimeout(timer);
+            unblockClicks();
+            console.log("finished");
+            // return;
+        } else {
+            cards[i].classList.toggle("flip");
+            i++;
+        }
+    }, 100);
+}
+blockClicks();
+setTimeout(flipCards, 1000);
