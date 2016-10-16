@@ -37,7 +37,7 @@
   width: 550px;
   height: 440px;
   display: block;
-  margin: 0 auto;
+  margin: auto;
 }
 /* entire container, keeps perspective */
 .flip-container {

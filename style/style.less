@@ -25,12 +25,6 @@
     }
 }
 
-
-/*
-.flip-container:hover .flipper,
-.flip-container.hover .flipper,*/
-
-
 /* flip speed goes here */
 
 .flipper {
@@ -52,7 +46,7 @@
     width: (@width*@columns+@padding*@columns);
     height: (@height*@rows+@padding*@rows);
     display: block;
-    margin: 0 auto;
+    margin: auto;
 }
 
 
@@ -72,7 +66,6 @@
 
 .front {
     .sides;
-    // .sizes;
     z-index: 2;
     /* for firefox 31 */
     transform: rotateY(0deg);
@@ -80,6 +73,5 @@
 
 .back {
     .sides;
-    // .sizes;
     transform: rotateY(180deg);
 }

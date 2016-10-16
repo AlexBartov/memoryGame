@@ -13,37 +13,52 @@ const imgSrcs = [
 var cards = [];
 const grid = document.querySelector(".grid");
 const backImg = "img/snowflake.png";
+// Event corresponding to card match
+var correctEvent = new Event('correct');
 
+// block/unblock page clicks event handling
+const [blockClicks, unblockClicks] = (() => {
+    let blocker = event => {
+        event.stopPropagation();
+        event.preventDefault;
+    }
+    let block = () => document.addEventListener("click", blocker, true);
+    let unBlock = () => document.removeEventListener("click", blocker, true);
+    return [block, unBlock];
+})();
+
+// populate grid
 var gridIndexes = [];
 for (let i = 0; i < imgSrcs.length; i++) {
     gridIndexes.push(i);
     gridIndexes.push(i);
 }
-
+// shuffle grid
 gridIndexes.sort(() => .5 - Math.random());
 
 var correct = 0;
 var selected = [];
 
 /**
- * Checks win conditions
- * 
- * @returns {Boolean} false if card should be flipped (not equals), true otherwise
+ * Checks win conditions, and handles flipped cards
  */
 function conditions() {
     if (selected.length > 1) {
         if (gridIndexes[selected[0]] === gridIndexes[selected[1]] &&
             selected[0] !== selected[1]) {
+            selected.forEach((index) => {
+                cards[index].dispatchEvent(correctEvent);
+            });
             correct++;
             if (correct == imgSrcs.length)
                 setTimeout(gameOver, 500);
             selected = [];
-            // return true;
         } else {
             let sel = selected;
             setTimeout(() => {
-                cards[sel[0]].classList.toggle("flip");
-                cards[sel[1]].classList.toggle("flip");
+                sel.forEach((index) => {
+                    cards[index].classList.toggle("flip");
+                });
             }, 500);
             selected = [];
         }
@@ -71,6 +86,7 @@ function gameOver() {
     console.log("you win!");
 }
 
+// draw grid
 (() => {
     let cardTemplate = document.querySelector("#template .flip-container");
     let row = document.querySelector("#template .grid-row");
@@ -88,11 +104,15 @@ function gameOver() {
         card.id = "card_" + index;
         card.querySelector(".front").appendChild(image);
         card.querySelector(".back").appendChild(backImage);
-        card.addEventListener("click", event => {
+        let clickHandler = () => {
             card.classList.toggle("flip");
             selected.push(index);
             conditions();
-        });
+        }
+        let correctHandler = () =>
+            card.removeEventListener("click", clickHandler);
+        card.addEventListener("click", clickHandler);
+        card.addEventListener("correct", correctHandler);
         currentRow.appendChild(card);
         cards.push(card);
     });
