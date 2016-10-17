@@ -109,8 +109,10 @@ function gameOver() {
             selected.push(index);
             conditions();
         }
-        let correctHandler = () =>
+        let correctHandler = () => {
             card.removeEventListener("click", clickHandler);
+            setTimeout(()=>image.classList.toggle("gold"), 400);
+        }
         card.addEventListener("click", clickHandler);
         card.addEventListener("correct", correctHandler);
         currentRow.appendChild(card);
