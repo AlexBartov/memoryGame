@@ -15,6 +15,7 @@ const grid = document.querySelector(".grid");
 const backImg = "img/snowflake.png";
 // Event corresponding to card match
 var correctEvent = new Event('correct');
+var glowEvent = new Event('glow');
 
 // block/unblock page clicks event handling
 const [blockClicks, unblockClicks] = (() => {
@@ -39,6 +40,26 @@ gridIndexes.sort(() => .5 - Math.random());
 var correct = 0;
 var selected = [];
 
+/* From Modernizr, check which transition event is correct */
+function whichTransitionEvent() {
+    let el = document.createElement('fakeelement');
+    let transitions = {
+        'transition': 'transitionend',
+        'OTransition': 'oTransitionEnd',
+        'MozTransition': 'transitionend',
+        'WebkitTransition': 'webkitTransitionEnd'
+    }
+
+    for (let t in transitions) {
+        if (el.style[t] !== undefined) {
+            return transitions[t];
+        }
+    }
+}
+
+/* Detect transition event */
+let transitionEvent = whichTransitionEvent();
+
 /**
  * Checks win conditions, and handles flipped cards
  */
@@ -46,8 +67,15 @@ function conditions() {
     if (selected.length > 1) {
         if (gridIndexes[selected[0]] === gridIndexes[selected[1]] &&
             selected[0] !== selected[1]) {
-            selected.forEach((index) => {
+            selected.forEach((index, i) => {
                 cards[index].dispatchEvent(correctEvent);
+                // add animation transition finish event listener to second opened card
+                if (i == 1) {
+                    let sel = selected;
+                    cards[index].addEventListener(transitionEvent, () => sel.forEach((index) => {
+                        cards[index].dispatchEvent(glowEvent);
+                    }));
+                }
             });
             correct++;
             if (correct == imgSrcs.length)
@@ -55,6 +83,7 @@ function conditions() {
             selected = [];
         } else {
             let sel = selected;
+            // swap cards, but not instantly
             setTimeout(() => {
                 sel.forEach((index) => {
                     cards[index].classList.toggle("flip");
@@ -109,12 +138,13 @@ function gameOver() {
             selected.push(index);
             conditions();
         }
-        let correctHandler = () => {
+        let correctHandler = () =>
             card.removeEventListener("click", clickHandler);
-            setTimeout(()=>image.classList.toggle("gold"), 400);
-        }
+        let glowHandler = () =>
+            image.classList.toggle("glow");
         card.addEventListener("click", clickHandler);
         card.addEventListener("correct", correctHandler);
+        card.addEventListener("glow", glowHandler);
         currentRow.appendChild(card);
         cards.push(card);
     });
@@ -126,8 +156,6 @@ function flipCards() {
         if (i >= cards.length) {
             clearTimeout(timer);
             unblockClicks();
-            console.log("finished");
-            // return;
         } else {
             cards[i].classList.toggle("flip");
             i++;
