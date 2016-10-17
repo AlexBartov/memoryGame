@@ -16,6 +16,17 @@ const backImg = "img/snowflake.png";
 // Event corresponding to card match
 var correctEvent = new Event('correct');
 var glowEvent = new Event('glow');
+const sounds = {
+    flipSound: new Audio("sound/card-flip.wav"),
+    matchSound: new Audio("sound/card-match.mp3")
+}
+
+let flipSound = [];
+
+function flipCard(index) {
+    flipSound[index].play();
+    cards[index].classList.toggle("flip");
+}
 
 // block/unblock page clicks event handling
 const [blockClicks, unblockClicks] = (() => {
@@ -72,9 +83,12 @@ function conditions() {
                 // add animation transition finish event listener to second opened card
                 if (i == 1) {
                     let sel = selected;
-                    cards[index].addEventListener(transitionEvent, () => sel.forEach((index) => {
-                        cards[index].dispatchEvent(glowEvent);
-                    }));
+                    cards[index].addEventListener(transitionEvent, () => {
+                        sel.forEach((index) => {
+                            cards[index].dispatchEvent(glowEvent);
+                        });
+                        sounds.matchSound.play();
+                    });
                 }
             });
             correct++;
@@ -82,13 +96,15 @@ function conditions() {
                 setTimeout(gameOver, 500);
             selected = [];
         } else {
-            let sel = selected;
-            // swap cards, but not instantly
-            setTimeout(() => {
-                sel.forEach((index) => {
-                    cards[index].classList.toggle("flip");
-                });
-            }, 500);
+            if (selected[0] !== selected[1]) {
+                let sel = selected;
+                // swap cards, but not instantly
+                setTimeout(() => {
+                    sel.forEach((index) => {
+                        flipCard(index);
+                    });
+                }, 500);
+            }
             selected = [];
         }
     }
@@ -134,7 +150,7 @@ function gameOver() {
         card.querySelector(".front").appendChild(image);
         card.querySelector(".back").appendChild(backImage);
         let clickHandler = () => {
-            card.classList.toggle("flip");
+            flipCard(index);
             selected.push(index);
             conditions();
         }
@@ -148,6 +164,12 @@ function gameOver() {
         currentRow.appendChild(card);
         cards.push(card);
     });
+    // initialize sounds
+    // one flip audio source for each card
+    flipSound = [];
+    for (let i = 0; i < cards.length; i++) {
+        flipSound.push(sounds.flipSound.cloneNode());
+    }
 })();
 
 function flipCards() {
@@ -157,7 +179,7 @@ function flipCards() {
             clearTimeout(timer);
             unblockClicks();
         } else {
-            cards[i].classList.toggle("flip");
+            flipCard(i);
             i++;
         }
     }, 100);
