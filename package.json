@@ -9,7 +9,7 @@
         "dependencies:bower": "bower install",
         "postinstall": "npm run dependencies:bower",
         "build:es6": "browserify ./main.js > ./mainc.js",
-        "build:css": " lessc --clean-css ./style/style.less ./style/style.min.css",
+        "build:css": " lessc --autoprefix=\"last 2 versions\" --clean-css ./style/style.less > ./style/style.min.css",
         "build": "npm run build:js && npm run build:css",
         "build_es6": "npm run build:es6 && npm run build:css"
     },
@@ -29,6 +29,7 @@
         "browserify": "^13.1.0",
         "del": "latest",
         "jshint": "latest",
+        "less-plugin-autoprefix": "^1.5.1",
         "less-plugin-clean-css": "^1.5.1",
         "rimraf": "latest",
         "uglify-js": "^2.7.3"
