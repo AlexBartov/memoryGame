@@ -10,21 +10,31 @@ const imgSrcs = [
     "img/santa.png",
     "img/teddy_bear_socks.png"
 ];
+let numPairs = imgSrcs.length;
 var cards = [];
 const grid = document.querySelector(".grid");
 const backImg = "img/snowflake.png";
 // Event corresponding to card match
 var correctEvent = new Event('correct');
 var glowEvent = new Event('glow');
+var mute = false;
+
+function playSound(sound) {
+    if (!mute) {
+        sound.play();
+    }
+}
 const sounds = {
     flipSound: new Audio("sound/card-flip.wav"),
-    matchSound: new Audio("sound/card-match.mp3")
+    matchSound: new Audio("sound/card-match.mp3"),
+    winSound: new Audio("sound/win-music.wav")
 }
 
 let flipSound = [];
 
 function flipCard(index) {
-    flipSound[index].play();
+    // flipSound[index].play();
+    playSound(flipSound[index]);
     cards[index].classList.toggle("flip");
 }
 
@@ -41,7 +51,7 @@ const [blockClicks, unblockClicks] = (() => {
 
 // populate grid
 var gridIndexes = [];
-for (let i = 0; i < imgSrcs.length; i++) {
+for (let i = 0; i < numPairs; i++) {
     gridIndexes.push(i);
     gridIndexes.push(i);
 }
@@ -78,6 +88,7 @@ function conditions() {
     if (selected.length > 1) {
         if (gridIndexes[selected[0]] === gridIndexes[selected[1]] &&
             selected[0] !== selected[1]) {
+            correct++;
             selected.forEach((index, i) => {
                 cards[index].dispatchEvent(correctEvent);
                 // add animation transition finish event listener to second opened card
@@ -87,13 +98,13 @@ function conditions() {
                         sel.forEach((index) => {
                             cards[index].dispatchEvent(glowEvent);
                         });
-                        sounds.matchSound.play();
+                        // sounds.matchSound.play();
+                        playSound(sounds.matchSound);
+                        if (correct == numPairs)
+                            setTimeout(gameOver, 500);
                     });
                 }
             });
-            correct++;
-            if (correct == imgSrcs.length)
-                setTimeout(gameOver, 500);
             selected = [];
         } else {
             if (selected[0] !== selected[1]) {
@@ -127,7 +138,9 @@ function clearNodes(elt) {
  * GameOver function
  */
 function gameOver() {
-    clearNodes(grid);
+    // sounds.winSound.play();
+    playSound(sounds.winSound);
+    // clearNodes(grid);
     console.log("you win!");
 }
 
@@ -154,10 +167,14 @@ function gameOver() {
             selected.push(index);
             conditions();
         }
-        let correctHandler = () =>
+        let correctHandler = () => {
             card.removeEventListener("click", clickHandler);
-        let glowHandler = () =>
+            card.removeEventListener("correct", correctHandler);
+        }
+        let glowHandler = () => {
             image.classList.toggle("glow");
+            card.removeEventListener("glow", glowHandler);
+        }
         card.addEventListener("click", clickHandler);
         card.addEventListener("correct", correctHandler);
         card.addEventListener("glow", glowHandler);
