@@ -14,6 +14,8 @@ const backImg = "img/snowflake.png";
 const grid = document.querySelector(".grid");
 const cardTemplate = document.querySelector("#template .flip-container");
 const row = document.querySelector("#template .grid-row");
+const bestScore = document.querySelector(".best");
+const currentScore = document.querySelector(".score");
 // Events corresponding to card match
 const correctEvent = new Event('correct');
 const glowEvent = new Event('glow');
@@ -33,6 +35,9 @@ let cards = [];
 let mute = false;
 // start time
 let start = null;
+let best = localStorage.getItem("christmas_memory_best") || 0;
+let score = 0;
+bestScore.innerHTML = best;
 
 function playSound(sound) {
     if (!mute) {
@@ -156,6 +161,11 @@ function gameOver() {
     playSound(sounds.winSound);
     grid.classList.add("glow");
     // clearNodes(grid);
+    if (score > best) {
+        best = score;
+        bestScore.innerHTML = best;
+        localStorage.setItem("christmas_memory_best", best);
+    }
     console.log("you win!");
 }
 
@@ -164,7 +174,9 @@ function time() {
 }
 
 function calcScore() {
-    return Math.max((bonusTime - time()) * timeBonus, 0) + Math.max((maxBonusTries - tries) * triesBonus, 0);
+    let bonusTime_ = (bonusTime - time()) * timeBonus;
+    let bonusTries = (maxBonusTries - tries) * triesBonus;
+    currentScore.innerHTML = score = (bonusTime_ > 0 ? bonusTime_ : 0) + (bonusTries > 0 ? bonusTries : 0);
 }
 
 // initialize game grid
