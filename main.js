@@ -152,6 +152,7 @@ function clearNodes(elt) {
 function gameOver() {
     // sounds.winSound.play();
     playSound(sounds.winSound);
+    grid.classList.add("glow");
     // clearNodes(grid);
     console.log("you win!");
 }
