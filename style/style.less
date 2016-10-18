@@ -38,8 +38,11 @@
     position: relative;
 }
 
+body {
+    background: #edf4c1;
+}
+
 .grid-row {
-    display: block;
     clear: both;
 }
 
@@ -53,8 +56,33 @@
     background: @gridBackground;
     width: (@width*@columns+@padding*@columns);
     height: (@height*@rows+@padding*@rows);
-    display: block;
     margin: auto;
+    clear:both;
+}
+
+.header {
+    &::after {
+        content: "";
+        display: block;
+        clear: both;
+    }
+    margin-bottom: 5px;
+    h1 {
+        margin: 0;
+        float: left;
+        font-family: "Mountains of Christmas";
+        font-size: 40px;
+        color: #ed384d;
+        font-style: normal;
+        font-variant: normal;
+        font-weight: 500;
+        // line-height: 30.5px;
+    }
+}
+
+.container {
+    width: (@width*@columns+@padding*@columns + 10px);
+    margin: 0 auto;
 }
 
 
