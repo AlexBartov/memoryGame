@@ -6,7 +6,7 @@
 @gridBackground: #abb9d1;
 @columns: 5;
 @rows: 4;
-@headinTextColor: #ed384d;
+@headingTextColor: #ed384d;
 .sizes() {
     width: @width;
     height: @height;
@@ -73,10 +73,35 @@ body {
         float: left;
         font-family: "Mountains of Christmas";
         font-size: 40px;
-        color: @headinTextColor;
+        color: @headingTextColor;
         font-style: normal;
         font-variant: normal;
         font-weight: 500;
+    }
+    .score-container {
+        float: right;
+        font-family: "Mountains of Christmas";
+        font-size: 25px;
+        font-style: normal;
+        font-variant: normal;
+        font-weight: 400;
+        .afters() {
+            // width: 50%;
+            text-align: right;
+            color: @headingTextColor;
+        }
+        .score {
+            &::after {
+                .afters;
+                content: "Score";
+            }
+        }
+        .best {
+            &::after {
+                .afters;
+                content: "Best";
+            }
+        }
     }
 }
 
