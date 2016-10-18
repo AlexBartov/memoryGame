@@ -10,14 +10,27 @@ const imgSrcs = [
     "img/santa.png",
     "img/teddy_bear_socks.png"
 ];
-let numPairs = imgSrcs.length;
-var cards = [];
-const grid = document.querySelector(".grid");
 const backImg = "img/snowflake.png";
-// Event corresponding to card match
-var correctEvent = new Event('correct');
-var glowEvent = new Event('glow');
-var mute = false;
+const grid = document.querySelector(".grid");
+// Events corresponding to card match
+const correctEvent = new Event('correct');
+const glowEvent = new Event('glow');
+const triesBonus = 25;
+const timeBonus = 20;
+const maxBonusTries = 60;
+const bonusTime = 120;
+let numPairs = imgSrcs.length;
+let tries = 0;
+// correct pairs
+let correct = 0;
+// selected cards
+let selected = [];
+// game cards
+let cards = [];
+// mute sound variable
+let mute = false;
+// start time
+let start = null;
 
 function playSound(sound) {
     if (!mute) {
@@ -58,9 +71,6 @@ for (let i = 0; i < numPairs; i++) {
 // shuffle grid
 gridIndexes.sort(() => .5 - Math.random());
 
-var correct = 0;
-var selected = [];
-
 /* From Modernizr, check which transition event is correct */
 function whichTransitionEvent() {
     let el = document.createElement('fakeelement');
@@ -85,6 +95,7 @@ let transitionEvent = whichTransitionEvent();
  * Checks win conditions, and handles flipped cards
  */
 function conditions() {
+    tries++;
     if (selected.length > 1) {
         if (gridIndexes[selected[0]] === gridIndexes[selected[1]] &&
             selected[0] !== selected[1]) {
@@ -119,6 +130,7 @@ function conditions() {
             selected = [];
         }
     }
+    calcScore();
 }
 
 /**
@@ -142,6 +154,14 @@ function gameOver() {
     playSound(sounds.winSound);
     // clearNodes(grid);
     console.log("you win!");
+}
+
+function time() {
+    return Math.round((Date.now() - start) / 1000.0);
+}
+
+function calcScore() {
+    return Math.max((bonusTime - time()) * timeBonus, 0) + Math.max((maxBonusTries - tries) * triesBonus, 0);
 }
 
 // draw grid
@@ -194,6 +214,7 @@ function flipCards() {
     let timer = setInterval(() => {
         if (i >= cards.length) {
             clearTimeout(timer);
+            start = Date.now();
             unblockClicks();
         } else {
             flipCard(i);
