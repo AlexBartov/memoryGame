@@ -12,6 +12,8 @@ const imgSrcs = [
 ];
 const backImg = "img/snowflake.png";
 const grid = document.querySelector(".grid");
+const cardTemplate = document.querySelector("#template .flip-container");
+const row = document.querySelector("#template .grid-row");
 // Events corresponding to card match
 const correctEvent = new Event('correct');
 const glowEvent = new Event('glow');
@@ -165,10 +167,11 @@ function calcScore() {
     return Math.max((bonusTime - time()) * timeBonus, 0) + Math.max((maxBonusTries - tries) * triesBonus, 0);
 }
 
-// draw grid
-(() => {
-    let cardTemplate = document.querySelector("#template .flip-container");
-    let row = document.querySelector("#template .grid-row");
+// initialize game grid
+function initGrid() {
+    if (grid.childNodes.length) {
+        clearNodes(grid);
+    }
     let currentRow = null;
     gridIndexes.forEach((imgIndex, index) => {
         let image = document.createElement("img");
@@ -208,7 +211,8 @@ function calcScore() {
     for (let i = 0; i < cards.length; i++) {
         flipSound.push(sounds.flipSound.cloneNode());
     }
-})();
+}
+
 
 function flipCards() {
     let i = 0;
@@ -223,5 +227,15 @@ function flipCards() {
         }
     }, 100);
 }
-blockClicks();
-setTimeout(flipCards, 1000);
+
+function startGame() {
+    correct = 0;
+    tries = 0;
+    cards = [];
+    grid.classList.remove("glow");
+    initGrid();
+    blockClicks();
+    setTimeout(flipCards, 1000);
+}
+
+startGame();
