@@ -75,8 +75,16 @@ for (let i = 0; i < numPairs; i++) {
     gridIndexes.push(i);
     gridIndexes.push(i);
 }
-// shuffle grid
-gridIndexes.sort(() => .5 - Math.random());
+
+function shuffleGrid() {
+    let j, temp, i;
+    for (i = gridIndexes.length; i; i--) {
+        j = Math.floor(Math.random() * i);
+        temp = gridIndexes[i - 1];
+        gridIndexes[i - 1] = gridIndexes[j];
+        gridIndexes[j] = temp;
+    }
+}
 
 /* From Modernizr, check which transition event is correct */
 function whichTransitionEvent() {
@@ -116,7 +124,6 @@ function conditions() {
                         sel.forEach((index) => {
                             cards[index].dispatchEvent(glowEvent);
                         });
-                        // sounds.matchSound.play();
                         playSound(sounds.matchSound);
                         if (correct == numPairs)
                             setTimeout(gameOver, 500);
@@ -157,10 +164,8 @@ function clearNodes(elt) {
  * GameOver function
  */
 function gameOver() {
-    // sounds.winSound.play();
     playSound(sounds.winSound);
     grid.classList.add("glow");
-    // clearNodes(grid);
     if (score > best) {
         best = score;
         bestScore.innerHTML = best;
@@ -246,6 +251,7 @@ function startGame() {
     cards = [];
     currentScore.innerHTML = 0;
     grid.classList.remove("glow");
+    shuffleGrid();
     initGrid();
     blockClicks();
     setTimeout(flipCards, 1000);
