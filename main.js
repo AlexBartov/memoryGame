@@ -41,6 +41,8 @@ let best = localStorage.getItem("christmas_memory_best") || 0;
 let score = 0;
 bestScore.innerHTML = best;
 
+replayBtn.addEventListener("click", startGame);
+
 muteBtn.addEventListener("click", () => {
     mute = !mute;
     muteBtn.classList.toggle("quiet");
@@ -253,6 +255,7 @@ function flipCards() {
 }
 
 function startGame() {
+    blockClicks();
     correct = 0;
     tries = 0;
     cards = [];
@@ -260,7 +263,6 @@ function startGame() {
     grid.classList.remove("glow");
     shuffleGrid();
     initGrid();
-    blockClicks();
     setTimeout(flipCards, 1000);
 }
 
