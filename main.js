@@ -37,7 +37,8 @@ let cards = [];
 let mute = false;
 // start time
 let start = null;
-let best = localStorage.getItem("christmas_memory_best") || 0;
+// for ms edge
+let best = localStorage && localStorage.getItem("christmas_memory_best") || 0;
 let score = 0;
 bestScore.innerHTML = best;
 
@@ -178,7 +179,8 @@ function gameOver() {
     if (score > best) {
         best = score;
         bestScore.innerHTML = best;
-        localStorage.setItem("christmas_memory_best", best);
+        // for ms edge
+        localStorage && localStorage.setItem("christmas_memory_best", best);
     }
     console.log("you win!");
 }
