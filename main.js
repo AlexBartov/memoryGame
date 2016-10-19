@@ -14,6 +14,8 @@ const backImg = "img/snowflake.png";
 const grid = document.querySelector(".grid");
 const cardTemplate = document.querySelector("#template .flip-container");
 const row = document.querySelector("#template .grid-row");
+const muteBtn = document.querySelector("#mute");
+const replayBtn = document.querySelector("#replay");
 const bestScore = document.querySelector(".best");
 const currentScore = document.querySelector(".score");
 // Events corresponding to card match
@@ -38,6 +40,11 @@ let start = null;
 let best = localStorage.getItem("christmas_memory_best") || 0;
 let score = 0;
 bestScore.innerHTML = best;
+
+muteBtn.addEventListener("click", () => {
+    mute = !mute;
+    muteBtn.classList.toggle("quiet");
+});
 
 function playSound(sound) {
     if (!mute) {
