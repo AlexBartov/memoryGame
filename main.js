@@ -244,6 +244,7 @@ function startGame() {
     correct = 0;
     tries = 0;
     cards = [];
+    currentScore.innerHTML = 0;
     grid.classList.remove("glow");
     initGrid();
     blockClicks();

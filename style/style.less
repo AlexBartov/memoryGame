@@ -7,6 +7,7 @@
 @columns: 5;
 @rows: 4;
 @headingTextColor: #ed384d;
+@scoresRight: 40px;
 .sizes() {
     width: @width;
     height: @height;
@@ -85,21 +86,27 @@ body {
         font-style: normal;
         font-variant: normal;
         font-weight: 400;
-        .afters() {
-            // width: 50%;
+        .befores() {
+            position: absolute;
+            right: @scoresRight;
             text-align: right;
             color: @headingTextColor;
         }
+        .scores() {
+            position: relative;
+        }
         .score {
-            &::after {
-                .afters;
-                content: "Score";
+            .scores;
+            &::before {
+                .befores;
+                content: "Score:";
             }
         }
         .best {
-            &::after {
-                .afters;
-                content: "Best";
+            .scores;
+            &::before {
+                .befores;
+                content: "Best:";
             }
         }
     }
