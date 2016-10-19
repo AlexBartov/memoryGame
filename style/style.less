@@ -4,6 +4,7 @@
 @padding: 10px;
 @tileBackground: #eff0f2;
 @gridBackground: #abb9d1;
+@buttonBackground: #cadbf7;
 @columns: 5;
 @rows: 4;
 @headingTextColor: #ed384d;
@@ -30,9 +31,6 @@
         height: 100%;
     }
 }
-
-
-/* flip speed goes here */
 
 .flipper {
     transition: 0.6s;
@@ -117,9 +115,6 @@ body {
     margin: 0 auto;
 }
 
-
-/* entire container, keeps perspective */
-
 .flip-container {
     margin-left: -@padding;
     margin-top: -@padding;
@@ -142,4 +137,45 @@ body {
 .back {
     .sides;
     transform: rotateY(180deg);
+}
+
+// styling buttons
+.controls {
+    margin-left: 170px;
+    margin-top: 15px;
+    a {
+        text-align: center;
+        margin-right: 100px;
+        width: 64px;
+        height: 64px;
+        display: inline-block;
+        position: relative;
+        line-height: 64px;
+        background-color: @buttonBackground;
+        background-image: linear-gradient(top, @gridBackground, @buttonBackground);
+        border-radius: 32px;
+        box-shadow: 0 1px 1px rgba(0, 0, 0, .25), 0 2px 3px rgba(0, 0, 0, .1);
+        &:active {
+            &::before {
+                top: -9px;
+            }
+            top: 1px;
+            background-image: linear-gradient(top, @buttonBackground, @gridBackground);
+        }
+        &::before {
+            content: '';
+            position: absolute;
+            z-index: -1;
+            top: -8px;
+            right: -8px;
+            bottom: -8px;
+            left: -8px;
+            border-radius: 140px;
+            opacity: 0.0;
+        }
+        &:hover::before {
+            background-color: @headingTextColor;
+            opacity: 0.2;
+        }
+    }
 }
