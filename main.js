@@ -10,9 +10,13 @@ const imgSrcs = [
     "img/santa.png",
     "img/teddy_bear_socks.png"
 ];
+// backside image
 const backImg = "img/snowflake.png";
+// grid element
 const grid = document.querySelector(".grid");
+// card template element
 const cardTemplate = document.querySelector("#template .flip-container");
+// game grid row element
 const row = document.querySelector("#template .grid-row");
 const muteBtn = document.querySelector("#mute");
 const replayBtn = document.querySelector("#replay");
@@ -21,11 +25,13 @@ const currentScore = document.querySelector(".score");
 // Events corresponding to card match
 const correctEvent = new Event('correct');
 const glowEvent = new Event('glow');
+// bonus values
 const triesBonus = 25;
 const timeBonus = 20;
 const maxBonusTries = 60;
 const bonusTime = 120;
-let numPairs = imgSrcs.length;
+// number of pairs
+const numPairs = imgSrcs.length;
 let tries = 0;
 // correct pairs
 let correct = 0;
@@ -37,7 +43,6 @@ let cards = [];
 let mute = false;
 // start time
 let start = null;
-// for ms edge
 let best = localStorage && localStorage.getItem("christmas_memory_best") || 0;
 let score = 0;
 bestScore.innerHTML = best;
@@ -49,11 +54,14 @@ muteBtn.addEventListener("click", () => {
     muteBtn.classList.toggle("quiet");
 });
 
+// plays given audio source
+// if sound is not muted
 function playSound(sound) {
     if (!mute) {
         sound.play();
     }
 }
+
 const sounds = {
     flipSound: new Audio("sound/card-flip.wav"),
     matchSound: new Audio("sound/card-match.mp3"),
@@ -63,7 +71,6 @@ const sounds = {
 let flipSound = [];
 
 function flipCard(index) {
-    // flipSound[index].play();
     playSound(flipSound[index]);
     cards[index].classList.toggle("flip");
 }
@@ -86,6 +93,9 @@ for (let i = 0; i < numPairs; i++) {
     gridIndexes.push(i);
 }
 
+/**
+ * Shuffle game grid
+ */
 function shuffleGrid() {
     let j, temp, i;
     for (i = gridIndexes.length; i; i--) {
@@ -171,7 +181,7 @@ function clearNodes(elt) {
 }
 
 /**
- * GameOver function
+ * Gameover function
  */
 function gameOver() {
     playSound(sounds.winSound);
@@ -179,16 +189,23 @@ function gameOver() {
     if (score > best) {
         best = score;
         bestScore.innerHTML = best;
-        // for ms edge
         localStorage && localStorage.setItem("christmas_memory_best", best);
     }
     console.log("you win!");
 }
 
+/**
+ * Returns current time
+ * 
+ * @returns {Number}
+ */
 function time() {
     return Math.round((Date.now() - start) / 1000.0);
 }
 
+/**
+ * Calculates current score
+ */
 function calcScore() {
     let bonusTime_ = (bonusTime - time()) * timeBonus;
     let bonusTries = (maxBonusTries - tries) * triesBonus;
@@ -242,6 +259,9 @@ function initGrid() {
 }
 
 
+/**
+ * Flips all game cards
+ */
 function flipCards() {
     let i = 0;
     let timer = setInterval(() => {
@@ -256,6 +276,9 @@ function flipCards() {
     }, 100);
 }
 
+/**
+ * Starts game
+ */
 function startGame() {
     blockClicks();
     correct = 0;
