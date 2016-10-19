@@ -11,7 +11,16 @@ const imgSrcs = [
     "img/teddy_bear_socks.png"
 ];
 // backside image
-const backImg = "img/snowflake.png";
+const backSrc = "img/snowflake.png";
+// preload images
+const [images, backImg] = (() => {
+    let genImage = src => {
+        let image = document.createElement("img");
+        image.src = src;
+        return image;
+    }
+    return [imgSrcs.map(genImage), genImage(backSrc)];
+})();
 // grid element
 const grid = document.querySelector(".grid");
 // card template element
@@ -219,10 +228,8 @@ function initGrid() {
     }
     let currentRow = null;
     gridIndexes.forEach((imgIndex, index) => {
-        let image = document.createElement("img");
-        image.src = imgSrcs[imgIndex];
-        let backImage = document.createElement("img");
-        backImage.src = backImg;
+        let image = images[imgIndex].cloneNode();
+        let backImage = backImg.cloneNode();
         if (index % 5 == 0) {
             currentRow = row.cloneNode(true);
             grid.appendChild(currentRow);
