@@ -270,17 +270,16 @@ function initGrid() {
  * Flips all game cards
  */
 function flipCards() {
-    let i = 0;
-    let timer = setInterval(() => {
-        if (i >= cards.length) {
-            clearTimeout(timer);
-            start = Date.now();
-            unblockClicks();
-        } else {
-            flipCard(i);
-            i++;
-        }
-    }, 100);
+    for (let i = 0; i < cards.length; i++) {
+        // unblock clicks when last card is flipped
+        if (i == cards.length - 1)
+            setTimeout(() => {
+                flipCard(i);
+                unblockClicks();
+            }, 100 * (i + 1));
+        else
+            setTimeout(() => flipCard(i), 100 * (i + 1));
+    }
 }
 
 /**
