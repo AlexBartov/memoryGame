@@ -1,0 +1,6 @@
+jsconfig.json
+exercises/*
+mainc.js
+node_modules/*
+style/*.min.css
+bower_components/*
