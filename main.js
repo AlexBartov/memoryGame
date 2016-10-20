@@ -327,7 +327,12 @@ function startGame() {
         }).catch(err => {
             console.log("objects load error: " + err.toString());
             console.log("Let's try again! Tries left: " + triesLeft--);
-            loadObjects();
+            if (triesLeft)
+                loadObjects();
+            else {
+                console.log("Can't load objects!");
+                alert("Can't load game!");
+            }
         });
     }
     loadObjects();
