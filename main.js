@@ -10,6 +10,8 @@ const imgSrcs = [
     "img/santa.png",
     "img/teddy_bear_socks.png"
 ];
+const loading = document.querySelector(".loading");
+const container = document.querySelector(".container");
 // backside image
 const backSrc = "img/snowflake.png";
 // images
@@ -290,6 +292,11 @@ function startGame() {
 
 // wait for all objects
 (() => {
+    let toggleLoading = () => {
+        loading.classList.toggle("show");
+        container.classList.toggle("hide");
+    }
+    toggleLoading();
     let triesLeft = 10;
     let loadObjects = () => {
         Promise.all(imgSrcs.map((src, index) =>
@@ -314,7 +321,10 @@ function startGame() {
             image.addEventListener("error", rej);
             backImg = image;
             image.src = backSrc;
-        })).then(startGame).catch(err => {
+        })).then(() => {
+            toggleLoading();
+            startGame();
+        }).catch(err => {
             console.log("objects load error: " + err.toString());
             console.log("Let's try again! Tries left: " + triesLeft--);
             loadObjects();

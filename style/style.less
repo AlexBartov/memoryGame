@@ -110,7 +110,27 @@ body {
     }
 }
 
+.loading {
+    display: none;
+    &.show {
+        width: (@width*@columns+@padding*@columns + 10px);
+        font-family: "Mountains of Christmas";
+        color: @headingTextColor;
+        text-align: center;
+        &::before {
+            content: "Loading";
+        }
+        display: block;
+        margin: 0 auto;
+        padding-top: 50px;
+        font-size: 40px;
+    }
+}
+
 .container {
+    &.hide {
+        display: none;
+    }
     width: (@width*@columns+@padding*@columns + 10px);
     margin: 0 auto;
 }
