@@ -289,26 +289,36 @@ function startGame() {
 }
 
 // wait for all objects
-Promise.all(imgSrcs.map((src, index) =>
-    new Promise((res, rej) => {
-        let image = document.createElement("img");
-        images[index] = image;
-        image.addEventListener("load", res);
-        image.addEventListener("error", rej);
-        image.src = src;
-    })
-)).then(() => Promise.all(soundSrcs.map((src, index) =>
-    new Promise((res, rej) => {
-        let audio = new Audio();
-        audio.addEventListener("loadeddata", res);
-        audio.addEventListener("error", rej);
-        audio.src = src;
-        sounds[soundNames[index]] = audio;
-    })
-))).then(() => new Promise((res, rej) => {
-    let image = document.createElement("img");
-    image.addEventListener("load", res);
-    image.addEventListener("error", rej);
-    backImg = image;
-    image.src = backSrc;
-})).then(startGame).catch(err => console.log("objects load error: " + err));
+(() => {
+    let triesLeft = 10;
+    let loadObjects = () => {
+        Promise.all(imgSrcs.map((src, index) =>
+            new Promise((res, rej) => {
+                let image = document.createElement("img");
+                images[index] = image;
+                image.addEventListener("load", res);
+                image.addEventListener("error", rej);
+                image.src = src;
+            })
+        )).then(() => Promise.all(soundSrcs.map((src, index) =>
+            new Promise((res, rej) => {
+                let audio = new Audio();
+                audio.addEventListener("loadeddata", res);
+                audio.addEventListener("error", rej);
+                audio.src = src;
+                sounds[soundNames[index]] = audio;
+            })
+        ))).then(() => new Promise((res, rej) => {
+            let image = document.createElement("img");
+            image.addEventListener("load", res);
+            image.addEventListener("error", rej);
+            backImg = image;
+            image.src = backSrc;
+        })).then(startGame).catch(err => {
+            console.log("objects load error: " + err.toString());
+            console.log("Let's try again! Tries left: " + triesLeft--);
+            loadObjects();
+        });
+    }
+    loadObjects();
+})();
