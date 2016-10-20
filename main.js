@@ -12,15 +12,9 @@ const imgSrcs = [
 ];
 // backside image
 const backSrc = "img/snowflake.png";
-// preload images
-const [images, backImg] = (() => {
-    let genImage = src => {
-        let image = document.createElement("img");
-        image.src = src;
-        return image;
-    }
-    return [imgSrcs.map(genImage), genImage(backSrc)];
-})();
+// images
+let images = [];
+let backImg;
 // grid element
 const grid = document.querySelector(".grid");
 // card template element
@@ -71,12 +65,9 @@ function playSound(sound) {
     }
 }
 
-const sounds = {
-    flipSound: new Audio("sound/card-flip.wav"),
-    matchSound: new Audio("sound/card-match.mp3"),
-    winSound: new Audio("sound/win-music.wav")
-}
-
+const soundSrcs = ["sound/card-flip.wav", "sound/card-match.mp3", "sound/win-music.wav"]
+const soundNames = ["flipSound", "matchSound", "winSound"];
+let sounds = {};
 let flipSound = [];
 
 function flipCard(index) {
@@ -297,4 +288,27 @@ function startGame() {
     setTimeout(flipCards, 1000);
 }
 
-startGame();
+// wait for all objects
+Promise.all(imgSrcs.map((src, index) =>
+    new Promise((res, rej) => {
+        let image = document.createElement("img");
+        images[index] = image;
+        image.addEventListener("load", res);
+        image.addEventListener("error", rej);
+        image.src = src;
+    })
+)).then(() => Promise.all(soundSrcs.map((src, index) =>
+    new Promise((res, rej) => {
+        let audio = new Audio();
+        audio.addEventListener("loadeddata", res);
+        audio.addEventListener("error", rej);
+        audio.src = src;
+        sounds[soundNames[index]] = audio;
+    })
+))).then(() => new Promise((res, rej) => {
+    let image = document.createElement("img");
+    image.addEventListener("load", res);
+    image.addEventListener("error", rej);
+    backImg = image;
+    image.src = backSrc;
+})).then(startGame).catch(err => console.log("objects load error: " + err));
